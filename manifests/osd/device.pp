@@ -51,8 +51,8 @@ size=1024m -n size=64k ${name}1",
 
   if $blkid != 'undefined' {
     exec { "ceph_osd_create_${devname}":
-      command => "/usr/sbin/ceph osd create ${blkid}",
-      unless  => "/usr/sbin/ceph osd dump | grep -sq ${blkid}",
+      command => "/usr/bin/ceph osd create ${blkid}",
+      unless  => "/usr/bin/ceph osd dump | grep -sq ${blkid}",
       require => Ceph::Key['admin'],
     }
 
@@ -89,7 +89,7 @@ size=1024m -n size=64k ${name}1",
       }
 
       exec { "ceph-osd-mkfs-${osd_id}":
-        command => "/usr/sbin/ceph-osd -c /etc/ceph/ceph.conf \
+        command => "/usr/bin/ceph-osd -c /etc/ceph/ceph.conf \
 -i ${osd_id} \
 --mkfs \
 --mkkey \
@@ -104,14 +104,14 @@ size=1024m -n size=64k ${name}1",
 
       exec { "ceph-osd-register-${osd_id}":
         command => "\
-/usr/sbin/ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
+/usr/bin/ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 -i ${osd_data}/keyring",
         require => Exec["ceph-osd-mkfs-${osd_id}"],
       }
 
       exec { "ceph-osd-crush-${osd_id}":
         command => "\
-/usr/sbin/ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
+/usr/bin/ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
         require => Exec["ceph-osd-register-${osd_id}"],
       }
 
