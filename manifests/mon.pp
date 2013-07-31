@@ -57,7 +57,7 @@ define ceph::mon (
   }
 
   exec { 'ceph-mon-mkfs':
-    command => "ceph-mon --mkfs -i ${name} \
+    command => "/usr/sbin/ceph-mon --mkfs -i ${name} \
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
     creates => "${mon_data_real}/keyring",
     require => [Package['ceph'], Concat['/etc/ceph/ceph.conf']],
@@ -77,14 +77,14 @@ define ceph::mon (
 --create-keyring \
 --name=client.admin \
 --add-key \
-$(ceph --name mon. --keyring ${mon_data_real}/keyring \
+$(/usr/sbin/ceph --name mon. --keyring ${mon_data_real}/keyring \
   auth get-or-create-key client.admin \
     mon 'allow *' \
     osd 'allow *' \
     mds allow)",
     creates => '/etc/ceph/keyring',
     require => Package['ceph'],
-    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
+    onlyif  => "/usr/sbin/ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
