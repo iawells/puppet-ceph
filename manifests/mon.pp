@@ -46,7 +46,7 @@ define ceph::mon (
 
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
-    command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
+    command => "/usr/sbin/ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
 --create-keyring \
 --name=mon. \
 --add-key='${monitor_secret}' \
@@ -73,7 +73,7 @@ define ceph::mon (
   }
 
   exec { 'ceph-admin-key':
-    command => "ceph-authtool /etc/ceph/keyring \
+    command => "/usr/sbin/ceph-authtool /etc/ceph/keyring \
 --create-keyring \
 --name=client.admin \
 --add-key \
