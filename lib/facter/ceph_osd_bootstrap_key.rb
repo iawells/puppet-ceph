@@ -14,7 +14,7 @@ require 'facter'
 
 Facter.add(:ceph_admin_key) do
   setcode do
-    Facter::Util::Resolution.exec("ceph auth get-key client.admin")
+    Facter::Util::Resolution.exec("/usr/sbin/ceph auth get-key client.admin")
   end
 end
 
@@ -23,7 +23,7 @@ end
 
 # Load the osds/uuids from ceph
 ceph_osds = Hash.new
-ceph_osd_dump = Facter::Util::Resolution.exec("ceph osd dump")
+ceph_osd_dump = Facter::Util::Resolution.exec("/usr/sbin/ceph osd dump")
 if ceph_osd_dump
   ceph_osd_dump.each_line do |line|
     if line =~ /^osd\.(\d+).* ([a-f0-9\-]+)$/
@@ -32,7 +32,7 @@ if ceph_osd_dump
   end
 end
 
-blkid = Facter::Util::Resolution.exec("blkid")
+blkid = Facter::Util::Resolution.exec("/sbin/blkid")
   blkid and blkid.each_line do |line|
   if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
     device = $1
